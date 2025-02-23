@@ -5,7 +5,7 @@ import { Construct } from 'constructs';
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import path from "node:path";
 
-export class ProductServiceStack extends cdk.Stack {
+export class ProductStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
