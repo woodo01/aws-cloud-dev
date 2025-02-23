@@ -19,9 +19,9 @@ export class ProductServiceStack extends cdk.Stack {
 
     const products = api.root.addResource('products');
     products.addMethod('GET', new apigateway.LambdaIntegration(
-      new NodejsFunction(this, 'getProductsList', {
+      new NodejsFunction(this, 'getProductList', {
         runtime: lambda.Runtime.NODEJS_18_X,
-        handler: 'getProductsList',
+        handler: 'getProductList',
         entry: path.join(__dirname, '../src/functions/getProductList.ts'),
         bundling: {
           externalModules: ['aws-sdk'],
