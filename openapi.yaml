@@ -1,0 +1,89 @@
+openapi: 3.0.1
+info:
+  title: Product Service API
+  description: API documentation for Product Service API.
+  version: 1.0.0
+
+servers:
+  - url: https://1aozz31sqa.execute-api.eu-central-1.amazonaws.com/prod
+    description: API Gateway
+
+paths:
+  /products:
+    get:
+      summary: Get all products
+      description: Retrieves a list of products from the AWS Lambda function.
+      responses:
+        "200":
+          description: Successfully retrieved products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "1"
+                    name:
+                      type: string
+                      example: "Product 1"
+                    price:
+                      type: number
+                      example: "100"
+                    description:
+                      type: string
+                      example: "Product 1 description"
+  /products/{productId}:
+    get:
+      summary: Get product by ID
+      description: Retrieves a product by ID from the AWS Lambda function.
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: productId
+          schema:
+            type: string
+            example: "1"
+      responses:
+        "200":
+          description: Successfully retrieved product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "1"
+                  name:
+                    type: string
+                    example: "Product 1"
+                  price:
+                    type: number
+                    example: "100"
+                  description:
+                    type: string
+                    example: "Product 1 description"
+        "400":
+          description: Product ID is required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Product ID is required"
+        "404":
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Product not found"
