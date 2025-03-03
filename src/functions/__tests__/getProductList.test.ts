@@ -27,4 +27,15 @@ describe('getProductList', () => {
             expect(typeof product.price).toBe('number');
         });
     });
+    it('should return 500 status code', async () => {
+        jest.mock('../../types/product.ts', () => ({
+            products: '1asd',
+        }));
+        jest.requireMock('../../types/product.ts').products = 'asd';
+        const event = {} as Partial<APIGatewayProxyEvent> as APIGatewayProxyEvent;
+
+        const result = await getProductList(event);
+
+        expect(result.statusCode).toBe(500);
+    });
 });

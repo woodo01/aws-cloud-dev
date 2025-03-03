@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 
 servers:
-  - url: https://1aozz31sqa.execute-api.eu-central-1.amazonaws.com/prod
+  - url: https://kaplfyoyic.execute-api.eu-central-1.amazonaws.com/prod
     description: API Gateway
 
 paths:
@@ -87,3 +87,118 @@ paths:
                   message:
                     type: string
                     example: "Product not found"
+    post:
+      tags:
+        - Products
+      summary: Create a new product
+      description: Creates a new product in the database
+      operationId: createProduct
+      parameters:
+        -   name: productId
+            in: path
+            required: true
+            description: productId
+            schema:
+              type: string
+              example: "1"
+      requestBody:
+        description: Product object that needs to be added to the store
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+          description: The product unique identifier
+        title:
+          type: string
+          example: "Product Name"
+          description: The name of the product
+        price:
+          type: number
+          format: float
+          example: 99.99
+          description: The price of the product
+        description:
+          type: string
+          example: "Product description"
+          description: Detailed description of the product
+        count:
+          type: integer
+          example: 10
+          description: Available quantity of the product
+      required:
+        - id
+        - title
+        - price
+
+    ProductRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Product Name"
+          description: The name of the product
+        description:
+          type: string
+          example: "Product description"
+          description: Detailed description of the product
+        price:
+          type: number
+          format: float
+          example: 99.99
+          description: The price of the product
+        count:
+          type: integer
+          example: 10
+          description: Initial quantity of the product
+      required:
+        - title
+        - description
+        - price
+        - count
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Error message"
+          description: Error description
+        error:
+          type: string
+          example: "Detailed error information"
+          description: Additional error details
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
