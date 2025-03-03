@@ -19,7 +19,7 @@ export const getProductList = async (event: APIGatewayProxyEvent): Promise<APIGa
     const response = products.map(product => {
       return {
         ...product,
-        ...stocks.find(s => s.product_id === product.id) || { count: 0 }
+        count: stocks.find(s => s.product_id === product.id)?.count ?? 0
       }
     });
 

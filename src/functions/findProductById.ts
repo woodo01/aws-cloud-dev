@@ -10,8 +10,6 @@ const productTable = process.env.PRODUCT_TABLE as string;
 const stockTable = process.env.STOCK_TABLE as string;
 
 export const findProductById = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  console.log('Event:', JSON.stringify(event, null, 2));
-
   try {
     const productId = event.pathParameters?.id;
 
@@ -59,7 +57,8 @@ export const findProductById = async (event: APIGatewayProxyEvent): Promise<APIG
     }
 
     const response = {
-      ...productResponse.Item as Product, ...stockResponse.Item as Stock
+      ...productResponse.Item as Product,
+      count: (stockResponse.Item as Stock)?.count ?? 0
     }
 
     return {
