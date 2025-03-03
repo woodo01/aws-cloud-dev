@@ -8,6 +8,8 @@
     "cdk": "cdk",
     "deploy": "cdk deploy",
     "destroy": "cdk destroy",
+    "init-db": "ts-node migrations/init.ts",
+    "init-db:clear": "ts-node migrations/init.ts",
     "test:coverage": "jest --coverage"
   },
   "devDependencies": {
@@ -25,6 +27,7 @@
     "uuid": "^11.1.0"
   },
   "dependencies": {
+    "@aws-lambda-powertools/logger": "^2.15.0",
     "aws-cdk-lib": "^2.0.0",
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.21"

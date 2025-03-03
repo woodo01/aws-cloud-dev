@@ -7,11 +7,11 @@ import { productsData } from './productsData';
 
 const dynamodb = DynamoDBDocumentClient.from(
   new DynamoDBClient({
-    region: process.env.AWS_REGION as string
+    region: process.env.AWS_REGION as string || 'eu-central-1'
 }));
 
-const PRODUCT_TABLE = process.env.PRODUCT_TABLE as string;
-const STOCK_TABLE = process.env.STOCK_TABLE as string;
+const PRODUCT_TABLE = process.env.PRODUCT_TABLE as string || 'product';
+const STOCK_TABLE = process.env.STOCK_TABLE as string || 'stock';
 
 async function clearTables(): Promise<void> {
   try {
@@ -70,6 +70,10 @@ async function populateTables(): Promise<void> {
     }
     
     for (const product of products) {
+      console.log({
+        TableName: PRODUCT_TABLE,
+        Item: product
+      });
       await dynamodb.send(new PutCommand({
         TableName: PRODUCT_TABLE,
         Item: product
