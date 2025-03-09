@@ -7,13 +7,31 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
 import * as path from 'path';
 
+const bucketName = process.env.BUCKET_NAME || "my-bucket";
+
 export class ImportServiceStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const bucket = s3.Bucket.fromBucketName(this, 'ImportBucket', 'aws-be-import-service-bucket');
+    const bucket = s3.Bucket.fromBucketName(this, 'ImportBucket', bucketName);
 
-    let importFileParserLambda = new NodejsFunction(this, 'ImportFileParserLambda', {
+    const importProductsFileLambda = new NodejsFunction(this, 'ImportProductsFileLambda', {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      handler: 'importProductsFile',
+      entry: path.join(__dirname, '../src/functions/importProductsFile/handler.ts'),
+      environment: {
+        BUCKET_NAME: bucket.bucketName,
+        REGION: this.region,
+      },
+      bundling: {
+        externalModules: [],
+        minify: true,
+        sourceMap: true,
+      },
+    });
+    bucket.grantReadWrite(importProductsFileLambda);
+
+    const importFileParserLambda = new NodejsFunction(this, 'ImportFileParserLambda', {
       functionName: 'importFileParser',
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'importFileParser',
@@ -29,21 +47,6 @@ export class ImportServiceStack extends cdk.Stack {
       },
     });
     bucket.grantReadWrite(importFileParserLambda);
-    let importProductsFileLambda = new NodejsFunction(this, 'ImportProductsFileLambda', {
-      runtime: lambda.Runtime.NODEJS_18_X,
-      handler: 'importProductsFile',
-      entry: path.join(__dirname, '../src/functions/importProductsFile/handler.ts'),
-      environment: {
-        BUCKET_NAME: bucket.bucketName,
-        REGION: this.region,
-      },
-      bundling: {
-        externalModules: [],
-        minify: true,
-        sourceMap: true,
-      },
-    });
-    bucket.grantReadWrite(importProductsFileLambda);
 
     const api = new apigateway.RestApi(this, 'ImportApi', {
       restApiName: 'Import Service',

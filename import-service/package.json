@@ -5,7 +5,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk",
+    "cdk": "cdk bootstrap",
     "deploy": "cdk deploy",
     "destroy": "cdk destroy",
     "build:scripts": "tsc -p tsconfig.json"
