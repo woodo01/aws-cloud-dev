@@ -27,12 +27,14 @@
     "@aws-lambda-powertools/logger": "^2.15.0",
     "@aws-sdk/client-dynamodb": "^3.751.0",
     "@aws-sdk/client-s3": "^3.758.0",
+    "@aws-sdk/client-sqs": "^3.758.0",
     "@aws-sdk/lib-dynamodb": "^3.751.0",
     "@aws-sdk/s3-request-presigner": "^3.758.0",
     "aws-cdk-lib": "2.178.2",
     "aws-sdk": "^2.1692.0",
     "constructs": "^10.0.0",
     "csv-parser": "^3.2.0",
+    "dotenv": "^16.4.7",
     "esbuild": "^0.25.0",
     "source-map-support": "^0.5.21"
   }
