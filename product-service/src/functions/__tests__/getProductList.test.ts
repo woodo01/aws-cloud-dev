@@ -1,5 +1,7 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
 import { getProductList } from "../getProductList";
+import { mockClient } from "aws-sdk-client-mock";
+import { DynamoDBDocumentClient, ScanCommand } from "@aws-sdk/lib-dynamodb";
 
 describe('getProductList', () => {
     it('should return list of products with 200 status code', async () => {
@@ -28,14 +30,11 @@ describe('getProductList', () => {
         });
     });
     it('should return 500 status code', async () => {
-        jest.mock('../../types/product.ts', () => ({
-            products: '1asd',
-        }));
-        jest.requireMock('../../types/product.ts').products = 'asd';
+        const ddbMock = mockClient(DynamoDBDocumentClient);
+        ddbMock.on(ScanCommand).rejects(new Error("Scan operation failed"));
+
         const event = {} as Partial<APIGatewayProxyEvent> as APIGatewayProxyEvent;
-
         const result = await getProductList(event);
-
         expect(result.statusCode).toBe(500);
     });
 });
