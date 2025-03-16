@@ -4,14 +4,14 @@ import { SQSEvent } from 'aws-lambda';
 import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
 import dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';
-import { logger } from "../services/logger";
+import { logger } from "../../services/logger";
 
 dotenv.config();
 const dynamodb = DynamoDBDocumentClient.from(new DynamoDBClient());
 const productsTable = process.env.PRODUCT_TABLE || 'product';
 const stocksTable = process.env.STOCK_TABLE || 'stock';
 const sns = new SNSClient({ region: process.env.CDK_DEFAULT_REGION });
-const topicArn = process.env.TOPIC_ARN;
+const topicArn = process.env.SNS_TOPIC_ARN;
 
 function isBodyValid(body: any) {
   return typeof body === 'string'
@@ -26,7 +26,7 @@ function isProductDataValid(productData: any) {
 export const catalogBatchProcess = async (event: SQSEvent) => {
   try {
     logger.info('Processing SQS messages', { recordCount: event.Records.length });
-
+    logger.info('records', {records: event.Records})
     for (const record of event.Records) {
       let productData;
 

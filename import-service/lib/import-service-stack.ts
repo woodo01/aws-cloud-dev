@@ -33,6 +33,7 @@ export class ImportServiceStack extends cdk.Stack {
     });
     bucket.grantReadWrite(importProductsFileLambda);
 
+    if (process.env.QUEUE_URL === undefined) throw new Error();
     const importFileParserLambda = new NodejsFunction(this, 'ImportFileParserLambda', {
       functionName: 'importFileParser',
       runtime: lambda.Runtime.NODEJS_18_X,
@@ -41,6 +42,7 @@ export class ImportServiceStack extends cdk.Stack {
       environment: {
         BUCKET_NAME: bucket.bucketName,
         REGION: this.region,
+        QUEUE_URL: process.env.QUEUE_URL as string,
       },
       bundling: {
         externalModules: [],

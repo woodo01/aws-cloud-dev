@@ -26,37 +26,37 @@ export class ProductStack extends cdk.Stack {
     const getProductListFunction = new NodejsFunction(this, 'GetProductListFunction', {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'getProductList',
-      entry: path.join(__dirname, '../src/functions/getProductList.ts'),
+      entry: path.join(__dirname, './functions/getProductList.ts'),
       bundling: {
         externalModules: [],
         minify: true,
         sourceMap: true,
       },
       environment: {
-        PRODUCTS_TABLE: productTable.tableName,
-        STOCKS_TABLE: stockTable.tableName,
+        PRODUCT_TABLE: productTable.tableName,
+        STOCK_TABLE: stockTable.tableName,
       },
     });
 
     const findProductByIdFunction = new NodejsFunction(this, 'FindProductByIdFunction', {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'findProductById',
-      entry: path.join(__dirname, '../src/functions/findProductById.ts'),
+      entry: path.join(__dirname, './functions/findProductById.ts'),
       bundling: {
         externalModules: [],
         minify: true,
         sourceMap: true,
       },
       environment: {
-        PRODUCTS_TABLE: productTable.tableName,
-        STOCKS_TABLE: stockTable.tableName,
+        PRODUCT_TABLE: productTable.tableName,
+        STOCK_TABLE: stockTable.tableName,
       },
     });
 
     const createProductFunction = new NodejsFunction(this, 'CreateProductFunction', {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'createProduct',
-      entry: path.join(__dirname, '../src/functions/createProduct.ts'),
+      entry: path.join(__dirname, './functions/createProduct.ts'),
       bundling: {
         externalModules: [],
         minify: true,

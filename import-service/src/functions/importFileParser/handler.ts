@@ -4,9 +4,7 @@ import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import { Logger } from '@aws-lambda-powertools/logger';
 import csvParser from 'csv-parser';
 import { Readable } from 'stream';
-import dotenv from 'dotenv';
 
-dotenv.config();
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
 const sqsClient = new SQSClient({ region: process.env.AWS_REGION });
 const logger = new Logger({ serviceName: 'importFileParser' });
@@ -53,6 +51,7 @@ export const importFileParser = async (event: S3Event) => {
       });
 
       logger.info(`Processing ${records.length} records`);
+      logger.info('records', {records: records})
       for (const data of records) {
         try {
           const messageBody = {

@@ -2,7 +2,7 @@ import { SQSEvent } from 'aws-lambda';
 import { mockClient } from 'aws-sdk-client-mock';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
-import { catalogBatchProcess } from "../processCatalogBatch";
+import { catalogBatchProcess } from "../catalogBatchProcess/handler";
 
 const ddbMock = mockClient(DynamoDBDocumentClient);
 const snsMock = mockClient(SNSClient);

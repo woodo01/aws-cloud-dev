@@ -42,8 +42,8 @@ export function useCatalogBatchProcess(stack: Stack, productTableName: string, s
 
   const catalogBatchProcess = new NodejsFunction(stack, 'CatalogBatchProcess', {
     runtime: lambda.Runtime.NODEJS_18_X,
-    handler: 'processCatalogBatch',
-    entry: path.join(__dirname, '../../src/functions/processCatalogBatch.ts'),
+    handler: 'catalogBatchProcess',
+    entry: path.join(__dirname, '../functions/catalogBatchProcess/handler.ts'),
     timeout: cdk.Duration.seconds(30),
     bundling: {
       externalModules: [],
