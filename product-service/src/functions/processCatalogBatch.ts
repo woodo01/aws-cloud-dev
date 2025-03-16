@@ -8,8 +8,8 @@ import { logger } from "../services/logger";
 
 dotenv.config();
 const dynamodb = DynamoDBDocumentClient.from(new DynamoDBClient());
-const productsTable = process.env.PRODUCTS_TABLE || 'product';
-const stocksTable = process.env.STOCKS_TABLE || 'stock';
+const productsTable = process.env.PRODUCT_TABLE || 'product';
+const stocksTable = process.env.STOCK_TABLE || 'stock';
 const sns = new SNSClient({ region: process.env.CDK_DEFAULT_REGION });
 const topicArn = process.env.TOPIC_ARN;
 
