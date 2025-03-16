@@ -51,7 +51,6 @@ export const importFileParser = async (event: S3Event) => {
       });
 
       logger.info(`Processing ${records.length} records`);
-      logger.info('records', {records: records})
       for (const data of records) {
         try {
           const messageBody = {
