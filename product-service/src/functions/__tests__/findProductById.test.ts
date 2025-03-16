@@ -1,8 +1,21 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
 import { findProductById } from "../findProductById";
+import { mockClient } from "aws-sdk-client-mock";
+import { DynamoDBDocumentClient, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { ProductRequest } from "../../types/productRequest";
+
+const ddbMock = mockClient(DynamoDBDocumentClient);
 
 describe('findProductById', () => {
+    beforeEach(() => {
+        ddbMock.reset();
+    });
+
     it('should return product when valid ID is provided', async () => {
+        ddbMock.on(GetCommand).resolves({
+            Item: { id: '1', 'title': 'test', 'description': 'test', 'price': 1 },
+        });
+
         const event = {
             pathParameters: { id: '1' }
         } as Partial<APIGatewayProxyEvent> as APIGatewayProxyEvent;
@@ -23,6 +36,8 @@ describe('findProductById', () => {
     });
 
     it('should return 404 when product is not found', async () => {
+        ddbMock.on(GetCommand).resolves({});
+
         const event = {
             pathParameters: { id: 'nonexistent-id' }
         } as Partial<APIGatewayProxyEvent> as APIGatewayProxyEvent;
