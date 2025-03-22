@@ -13,3 +13,4 @@ cdk.out
 /.env
 
 .aws_first_account
+/authorization-service/.env
