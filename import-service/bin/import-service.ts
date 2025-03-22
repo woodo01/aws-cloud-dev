@@ -10,3 +10,4 @@ new ImportServiceStack(app, 'ImportServiceStack', {
     region: process.env.CDK_DEFAULT_REGION,
   },
 });
+app.synth();
