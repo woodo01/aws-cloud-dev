@@ -3,6 +3,9 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as path from 'path';
 import * as cdk from 'aws-cdk-lib';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export class AuthorizationServiceStack extends cdk.Stack {
   public readonly basicAuthorizer: lambda.Function;
