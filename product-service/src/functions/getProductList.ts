@@ -7,8 +7,8 @@ import { logger } from "../services/logger";
 
 const client = new DynamoDBClient();
 const dynamodb = DynamoDBDocumentClient.from(client);
-const productTable = process.env.PRODUCTS_TABLE || 'product';
-const stockTable = process.env.STOCKS_TABLE || 'stock';
+const productTable = process.env.PRODUCT_TABLE || 'product';
+const stockTable = process.env.STOCK_TABLE || 'stock';
 
 export const getProductList = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Request received', {

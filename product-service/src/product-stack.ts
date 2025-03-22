@@ -5,6 +5,7 @@ import { Construct } from 'constructs';
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import path from "node:path";
+import { useCatalogBatchProcess } from "./hooks/useCatalogBatchProcess";
 
 export class ProductStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -25,37 +26,37 @@ export class ProductStack extends cdk.Stack {
     const getProductListFunction = new NodejsFunction(this, 'GetProductListFunction', {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'getProductList',
-      entry: path.join(__dirname, '../src/functions/getProductList.ts'),
+      entry: path.join(__dirname, './functions/getProductList.ts'),
       bundling: {
         externalModules: [],
         minify: true,
         sourceMap: true,
       },
       environment: {
-        PRODUCTS_TABLE: productTable.tableName,
-        STOCKS_TABLE: stockTable.tableName,
+        PRODUCT_TABLE: productTable.tableName,
+        STOCK_TABLE: stockTable.tableName,
       },
     });
 
     const findProductByIdFunction = new NodejsFunction(this, 'FindProductByIdFunction', {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'findProductById',
-      entry: path.join(__dirname, '../src/functions/findProductById.ts'),
+      entry: path.join(__dirname, './functions/findProductById.ts'),
       bundling: {
         externalModules: [],
         minify: true,
         sourceMap: true,
       },
       environment: {
-        PRODUCTS_TABLE: productTable.tableName,
-        STOCKS_TABLE: stockTable.tableName,
+        PRODUCT_TABLE: productTable.tableName,
+        STOCK_TABLE: stockTable.tableName,
       },
     });
 
     const createProductFunction = new NodejsFunction(this, 'CreateProductFunction', {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'createProduct',
-      entry: path.join(__dirname, '../src/functions/createProduct.ts'),
+      entry: path.join(__dirname, './functions/createProduct.ts'),
       bundling: {
         externalModules: [],
         minify: true,
@@ -74,6 +75,12 @@ export class ProductStack extends cdk.Stack {
     stockTable.grantReadData(findProductByIdFunction);
     productTable.grantWriteData(createProductFunction);
     stockTable.grantWriteData(createProductFunction);
+
+    const {createProductTopic,catalogItemsQueue, catalogBatchProcess} = useCatalogBatchProcess(this, productTable.tableName, stockTable.tableName);
+    productTable.grantWriteData(catalogBatchProcess);
+    stockTable.grantWriteData(catalogBatchProcess);
+    createProductTopic.grantPublish(catalogBatchProcess);
+    catalogItemsQueue.grantConsumeMessages(catalogBatchProcess);
 
     const api = new apigateway.RestApi(this, 'ProductApi', {
       restApiName: 'Product Service',

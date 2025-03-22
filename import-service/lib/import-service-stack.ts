@@ -1,11 +1,13 @@
 import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
-import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { Construct } from 'constructs';
 import * as path from 'path';
+import { useQueue } from "../src/hooks/useQueue";
 
 const bucketName = process.env.BUCKET_NAME || "my-bucket";
 
@@ -31,6 +33,7 @@ export class ImportServiceStack extends cdk.Stack {
     });
     bucket.grantReadWrite(importProductsFileLambda);
 
+    if (process.env.QUEUE_URL === undefined) throw new Error();
     const importFileParserLambda = new NodejsFunction(this, 'ImportFileParserLambda', {
       functionName: 'importFileParser',
       runtime: lambda.Runtime.NODEJS_18_X,
@@ -39,6 +42,7 @@ export class ImportServiceStack extends cdk.Stack {
       environment: {
         BUCKET_NAME: bucket.bucketName,
         REGION: this.region,
+        QUEUE_URL: process.env.QUEUE_URL as string,
       },
       bundling: {
         externalModules: [],
@@ -47,6 +51,15 @@ export class ImportServiceStack extends cdk.Stack {
       },
     });
     bucket.grantReadWrite(importFileParserLambda);
+
+    const { catalogItemsQueue } = useQueue(this);
+    importFileParserLambda.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['sqs:SendMessage'],
+        resources: [catalogItemsQueue.queueArn],
+      })
+    );
 
     const api = new apigateway.RestApi(this, 'ImportApi', {
       restApiName: 'Import Service',
