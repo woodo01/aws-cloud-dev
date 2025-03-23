@@ -22,7 +22,7 @@ export const basicAuthorizer = async (event: APIGatewayTokenAuthorizerEvent): Pr
     let plainCredentials: string[];
     try {
       const buff = Buffer.from(authParts[1], 'base64');
-      plainCredentials = buff.toString('utf-8').split(':');
+      plainCredentials = buff.toString('utf-8').split('=');
       
       if (plainCredentials.length !== 2) {
         console.log('Invalid credentials format');
