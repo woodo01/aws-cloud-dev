@@ -2,15 +2,8 @@
 !jest.config.js
 *.d.ts
 node_modules
-coverage
+.env
 
 # CDK asset staging directory
 .cdk.staging
 cdk.out
-
-/.idea/
-.aws
-/.env
-
-.aws_first_account
-/authorization-service/.env
